@@ -73,6 +73,9 @@ services:
       APP_EMBEDDINGS_APIKEY: ${APP_EMBEDDINGS_APIKEY:-""}
       SUMMARY_LLM_APIKEY: ${SUMMARY_LLM_APIKEY:-""}
 
+      # ==== Ingestion Pipeline Configuration ====
+      INGESTION_PIPELINE: ${INGESTION_PIPELINE:-"nv_ingest"}
+
       ##===Embedding Model specific configurations===
       # url on which embedding model is hosted. If "", Nvidia hosted API is used
       APP_EMBEDDINGS_SERVERURL: ${APP_EMBEDDINGS_SERVERURL-"nemoretriever-embedding-ms:8000/v1"}

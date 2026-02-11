@@ -220,6 +220,9 @@ services:
       # Absolute path to custom prompt.yaml file
       PROMPT_CONFIG_FILE: ${PROMPT_CONFIG_FILE:-/prompt.yaml}
 
+      # ==== Ingestion Pipeline Configuration ====
+      INGESTION_PIPELINE: ${INGESTION_PIPELINE:-"nv_ingest"}
+
       ##===Vector DB specific configurations===
       # URL on which vectorstore is hosted
       APP_VECTORSTORE_URL: "http://milvus:19530"

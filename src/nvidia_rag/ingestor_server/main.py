@@ -94,6 +94,7 @@ from nvidia_rag.utils.summarization import generate_document_summaries
 from nvidia_rag.utils.summary_status_handler import SUMMARY_STATUS_HANDLER
 from nvidia_rag.utils.vdb import DEFAULT_DOCUMENT_INFO_COLLECTION, _get_vdb_op
 from nvidia_rag.utils.vdb.vdb_base import VDBRag
+from nvidia_rag.ingestor_server.ingestion_pipelines.nemotron_parse.nemotron_parse_pipeline import NemotronParse
 
 # Initialize logger
 logger = logging.getLogger(__name__)
@@ -2375,13 +2376,29 @@ class NvidiaRAGIngestor:
             results, failures = [], []
             return results, failures
 
-        results, failures = await self._perform_file_ext_based_nv_ingest_ingestion(
-            batch_number=batch_number,
-            filtered_filepaths=filtered_filepaths,
-            split_options=split_options,
-            vdb_op=vdb_op,
-            state_manager=state_manager,
-        )
+        if self.config.ingestion_pipeline == "nv_ingest":
+            results, failures = await self._perform_file_ext_based_nv_ingest_ingestion(
+                batch_number=batch_number,
+                filtered_filepaths=filtered_filepaths,
+                split_options=split_options,
+                vdb_op=vdb_op,
+                state_manager=state_manager,
+            )
+        elif self.config.ingestion_pipeline == "nemotron_parse":
+            nemotron_parse_pipeline = NemotronParse(
+                config=self.config,
+                vdb_op=vdb_op,
+                state_manager=state_manager,
+                filepaths=filtered_filepaths,
+                collection_name=collection_name,
+                split_options=split_options,
+            )
+            results, failures = await nemotron_parse_pipeline.run()
+            if generate_summary:
+                generate_summary = False
+                logger.warning("Summary generation is not supported for the Nemotron Parse ingestion pipeline. Skipping summary generation step.")
+        else:
+            raise ValueError(f"Invalid ingestion pipeline: {self.config.ingestion_pipeline}")
 
         # Start summary task only if not shallow_summary (already started in batch wrapper)
         if generate_summary and not shallow_summary:

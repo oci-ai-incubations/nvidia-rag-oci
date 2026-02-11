@@ -1084,6 +1084,11 @@ class NvidiaRAGConfig(_ConfigBase):
         env="TEMP_DIR",
         description="Temporary directory for file processing and storage",
     )
+    ingestion_pipeline: str = Field(
+        default="nv_ingest", # "nv_ingest" or "nemotron_parse"
+        env="INGESTION_PIPELINE",
+        description="Ingestion pipeline to use for ingesting documents",
+    )
 
     @field_validator("default_confidence_threshold")
     @classmethod
