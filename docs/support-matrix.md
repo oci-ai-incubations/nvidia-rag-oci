@@ -66,16 +66,16 @@ To install the RAG Blueprint on Kubernetes, you need one of the following:
 - 8 x B200
 - 9 x A100-80GB SXM
 - 8 x RTX PRO 6000
-- 3 x H100 (with [Multi-Instance GPU](./mig-deployment.md)
+- 3 x H100 (with [Multi-Instance GPU](./mig-deployment.md))
 
 
 
 ## Hardware requirements for self-hosting all NVIDIA NIM microservices
 
-The following are requirements and recommendations for the individual components of the RAG Bluprint:
+The following are requirements and recommendations for the individual components of the RAG Blueprint:
 
 - **Pipeline operation** – 1x L40 GPU or similar recommended. This is needed for the Milvus vector database, as GPU acceleration is enabled by default.
-- **LLM NIM (llama-3.3-nemotron-super-49b-v1.5)** – Refer to the [Support Matrix]( https://docs.nvidia.com/nim/large-language-models/latest/supported-models.html#llama-3-3-nemotron-super-49b-v1-5).
+- **LLM NIM (llama-3.3-nemotron-super-49b-v1.5)** – Refer to the [Support Matrix](https://docs.nvidia.com/nim/large-language-models/latest/supported-models.html#llama-3-3-nemotron-super-49b-v1-5).
 - **Embedding NIM (Llama-3.2-NV-EmbedQA-1B-v2 )** – Refer to the [Support Matrix](https://docs.nvidia.com/nim/nemo-retriever/text-embedding/latest/support-matrix.html#llama-3-2-nv-embedqa-1b-v2).
 - **Reranking NIM (llama-3_2-nv-rerankqa-1b-v2 )**: Refer to the [Support Matrix](https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/support-matrix.html#llama-3-2-nv-rerankqa-1b-v2).
 - **NeMo Retriever OCR (Default)**: Refer to the [Support Matrix](https://docs.nvidia.com/nim/ingestion/image-ocr/1.2.0/support-matrix.html).
