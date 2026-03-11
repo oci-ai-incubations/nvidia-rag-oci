@@ -113,6 +113,10 @@ oracle = [
 minio = [
     "minio>=7.2,<8.0",
 ]
+# This could likely be added to 'oracle'
+oci = [
+    "oci>=2.130,<3.0",
+]
 
 [tool.uv.sources]
 nvidia-rag = { workspace = true }

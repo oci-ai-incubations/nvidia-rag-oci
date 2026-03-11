@@ -147,19 +147,45 @@ class MinioOperator:
 def get_minio_operator(
     default_bucket_name: str = DEFAULT_BUCKET_NAME,
     config: NvidiaRAGConfig | None = None,
-) -> MinioOperator | None:
+) -> "MinioOperator | None":
     """
-    Prepares and return MinioOperator object, or None when MinIO is disabled.
+    Return an object storage operator, or None when all storage backends are disabled.
+
+    OCI Object Storage (ENABLE_OCI_OBJECT_STORAGE=true) takes precedence over MinIO.
+    Falls back to MinIO when OCI is not enabled.
 
     Args:
-        default_bucket_name: Default bucket name
+        default_bucket_name: Default bucket name used for MinIO (ignored for OCI, which uses OCI_BUCKET_NAME).
         config: NvidiaRAGConfig instance. If None, creates a new one.
 
     Returns:
-        - minio_operator: MinioOperator, or None if ENABLE_MINIO=false or package not installed
+        OciObjectStorageOperator, MinioOperator, or None if all backends are disabled/unavailable.
     """
+    from nvidia_rag.utils.oci_operator import (  # avoid circular import at module level
+        OciObjectStorageOperator,
+        _OCI_AVAILABLE,
+    )
+
     if config is None:
         config = NvidiaRAGConfig()
+
+    # OCI Object Storage takes precedence when explicitly enabled
+    if config.oci_object_storage.enabled:
+        if not _OCI_AVAILABLE:
+            logger.warning(
+                "oci package is not installed. Multimodal citations will be unavailable. "
+                "Install with: pip install 'nvidia_rag[oci]', or set ENABLE_OCI_OBJECT_STORAGE=false."
+            )
+            return None
+        logger.info("Using OCI Object Storage for multimodal content.")
+        return OciObjectStorageOperator(
+            namespace=config.oci_object_storage.namespace,
+            bucket_name=config.oci_object_storage.bucket_name,
+            region=config.oci_object_storage.region,
+            auth_type=config.oci_object_storage.auth_type,
+            config_file=config.oci_object_storage.config_file,
+            config_profile=config.oci_object_storage.config_profile,
+        )
 
     if not config.minio.enabled:
         logger.info("MinIO is disabled (ENABLE_MINIO=false). Multimodal citations will be unavailable.")
@@ -179,6 +205,7 @@ def get_minio_operator(
         default_bucket_name=default_bucket_name,
     )
     return minio_operator
+
 
 
 def get_unique_thumbnail_id_collection_prefix(
