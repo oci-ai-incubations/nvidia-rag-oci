@@ -108,7 +108,16 @@ envVars:
   ## Service-specific API keys are now managed via apiKeysSecret section above.
   ## See apiKeysSecret configuration for details on setting service-specific keys.
 
+  ##===OCI Object Storage configurations used to store multimodal base64 content===
+  ENABLE_OCI_OBJECT_STORAGE: "true"
+  OCI_NAMESPACE: ""           # OCI tenancy object storage namespace
+  OCI_BUCKET_NAME: "nvidia-rag-thumbnails"
+  OCI_REGION: ""              # e.g., us-ashburn-1
+  OCI_AUTH_TYPE: "instance_principal"  # instance_principal | resource_principal | api_key
+  ENABLE_MINIO: "false"
+
   ##===MINIO specific configurations used to store multimodal base64 content===
+  ## Kept for reference; disabled when ENABLE_OCI_OBJECT_STORAGE=true
   MINIO_ENDPOINT: "rag-minio:9000"
   MINIO_ACCESSKEY: "minioadmin"
   MINIO_SECRETKEY: "minioadmin"
@@ -340,7 +349,16 @@ ingestor-server:
     APP_VECTORSTORE_APIKEY: ""
     COLLECTION_NAME: "multimodal_data"
 
+    # === OCI Object Storage Configurations ===
+    ENABLE_OCI_OBJECT_STORAGE: "true"
+    OCI_NAMESPACE: ""           # OCI tenancy object storage namespace
+    OCI_BUCKET_NAME: "nvidia-rag-thumbnails"
+    OCI_REGION: ""              # e.g., us-ashburn-1
+    OCI_AUTH_TYPE: "instance_principal"  # instance_principal | resource_principal | api_key
+    ENABLE_MINIO: "false"
+
     # === MinIO Configurations ===
+    ## Kept for reference; disabled when ENABLE_OCI_OBJECT_STORAGE=true
     MINIO_ENDPOINT: "rag-minio:9000"
     MINIO_ACCESSKEY: "minioadmin"
     MINIO_SECRETKEY: "minioadmin"
@@ -409,8 +427,8 @@ ingestor-server:
     REDIS_DB: "0"
     ENABLE_REDIS_BACKEND: "False"
 
-    # === Bulk upload to MinIO ===
-    ENABLE_MINIO_BULK_UPLOAD: "True"
+    # === Bulk upload (MinIO Snowball only; set false when using OCI Object Storage) ===
+    ENABLE_MINIO_BULK_UPLOAD: "False"
     TEMP_DIR: "/tmp-data"
     INGESTOR_SERVER_DATA_DIR: "/data/"
 

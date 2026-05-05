@@ -910,6 +910,46 @@ class MinioConfig(_ConfigBase):
     )
 
 
+class OciObjectStorageConfig(_ConfigBase):
+    """OCI Object Storage configuration (drop-in replacement for MinIO)."""
+
+    enabled: bool = Field(
+        default=False,
+        env="ENABLE_OCI_OBJECT_STORAGE",
+        description="Enable OCI Object Storage for multimodal citations. Takes precedence over MinIO when true.",
+    )
+    namespace: str = Field(
+        default="",
+        env="OCI_NAMESPACE",
+        description="OCI Object Storage namespace (tenancy object storage namespace)",
+    )
+    bucket_name: str = Field(
+        default="nvidia-rag-thumbnails",
+        env="OCI_BUCKET_NAME",
+        description="OCI Object Storage bucket name for multimodal content",
+    )
+    region: str = Field(
+        default="",
+        env="OCI_REGION",
+        description="OCI region identifier (e.g., us-ashburn-1)",
+    )
+    auth_type: str = Field(
+        default="instance_principal",
+        env="OCI_AUTH_TYPE",
+        description="OCI authentication type: 'instance_principal', 'resource_principal', or 'api_key'",
+    )
+    config_file: str = Field(
+        default="~/.oci/config",
+        env="OCI_CONFIG_FILE",
+        description="Path to OCI config file (only used when auth_type='api_key')",
+    )
+    config_profile: str = Field(
+        default="DEFAULT",
+        env="OCI_CONFIG_PROFILE",
+        description="OCI config profile name (only used when auth_type='api_key')",
+    )
+
+
 class SummarizerConfig(_ConfigBase):
     """Summarizer configuration."""
 
@@ -1079,6 +1119,7 @@ class NvidiaRAGConfig(_ConfigBase):
     tracing: TracingConfig = PydanticField(default_factory=TracingConfig)
     vlm: VLMConfig = PydanticField(default_factory=VLMConfig)
     minio: MinioConfig = PydanticField(default_factory=MinioConfig)
+    oci_object_storage: OciObjectStorageConfig = PydanticField(default_factory=OciObjectStorageConfig)
     summarizer: SummarizerConfig = PydanticField(default_factory=SummarizerConfig)
     metadata: MetadataConfig = PydanticField(default_factory=MetadataConfig)
     query_decomposition: QueryDecompositionConfig = PydanticField(
